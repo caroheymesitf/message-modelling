@@ -1,0 +1,46 @@
+#cf https://github.com/MarcSkovMadsen/awesome-streamlit/blob/master/.streamlit/config.prod.toml
+#https://github.com/rchardptrsn/Census-Data-Streamlit-App/blob/master/config.toml
+
+[server]
+
+# List of folders that should not be watched for changes. Relative paths will be taken as relative to the current working directory.
+# Example: ['/home/user1/env', 'relative/path/to/folder']
+# Default: []
+folderWatchBlacklist = ['']
+
+# If false, will attempt to open a browser window on start.
+# Default: false unless (1) we are on a Linux box where DISPLAY is unset, or (2) server.liveSave is set.
+headless = true
+
+# Immediately share the app in such a way that enables live monitoring, and post-run analysis.
+# Default: false
+liveSave = false #👈👈👈de-activate if you run locally
+
+# Automatically rerun script when the file is modified on disk.
+# Default: false
+runOnSave = true
+
+# The port where the server will listen for client and browser connections.
+# Default: 8501
+port = 80 #👈👈👈de-activate if you run locally  BUT activate in Azure !!!
+
+# Enables support for Cross-Origin Request Sharing, for added security.
+# Default: true
+enableCORS = false
+
+
+
+#[browser]
+serverAddress = '0.0.0.0' # 👈 This is what makes our host running in IP 0.0.0.0
+serverPort = 80
+
+[global]
+dataFrameSerialization = "legacy"
+
+
+[theme]
+primaryColor="#F63366"
+backgroundColor="#FFFFFF"
+secondaryBackgroundColor="#F0F2F6"
+textColor="#262730"
+#font="sans serif"
