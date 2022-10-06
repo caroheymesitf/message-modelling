@@ -827,185 +827,180 @@ st.markdown('''[back to top](#beginning)''')
 st.markdown("""---""")
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#<------------------- A debuguer ---------->
 # #SECTION LAST MODEL
-# output = "<div class='red'>6. Last experiment with guided modeling</div>"
-# st.markdown(output, unsafe_allow_html=True)
-# st.subheader(""" """, anchor='s6')
+output = "<div class='red'>6. Last experiment with guided modeling</div>"
+st.markdown(output, unsafe_allow_html=True)
+st.subheader(""" """, anchor='s6')
 
-# st.markdown('''
-# In the process of modelling we have tested different sentence transformers models in order to minimise outliers, including
-# *paraphrase-MiniLM-L12-v2* or  *dangvantuan/sentence-camembert-large*. 
+st.markdown('''
+In the process of modelling we have tested different sentence transformers models in order to minimise outliers, including
+*paraphrase-MiniLM-L12-v2* or  *dangvantuan/sentence-camembert-large*. 
 
-# We have performed tests with and without data cleaning to get the best one.
+We have performed tests with and without data cleaning to get the best one.
 
-# At this stage, most relevant results are obtained with the sentence transformer *embedding lincoln/2021twitchfr-conv-bert-small-mlm-simcse* and a deletion of named entities and stop words.
+At this stage, most relevant results are obtained with the sentence transformer *embedding lincoln/2021twitchfr-conv-bert-small-mlm-simcse* and a deletion of named entities and stop words.
 
-# We propose a third model for analysis, without prior any data cleaning, but with a guided modeling approach.
+We propose a third model for analysis, without prior any data cleaning, but with a guided modeling approach.
 
-# **Guided Topic Modeling** or **Seeded Topic Modeling** is a collection of techniques that guides the topic modeling approach by setting a number of seed topics in which the model will converge to. These techniques allow us to set a pre-defined number of topic representations that are sure to be in documents.
+**Guided Topic Modeling** or **Seeded Topic Modeling** is a collection of techniques that guides the topic modeling approach by setting a number of seed topics in which the model will converge to. These techniques allow us to set a pre-defined number of topic representations that are sure to be in documents.
 
-# First, we create embeddings for each seeded topics by joining them and passing them through the document embedder. These embeddings will be compared with the existing document embeddings through cosine similarity and assigned a label. If the document is most similar to a seeded topic, then it will get that topic's label. If it is most similar to the average document embedding, it will get the -1 label. These labels are then passed through UMAP to create a semi-supervised approach that should nudge the topic creation to the seeded topics.
+First, we create embeddings for each seeded topics by joining them and passing them through the document embedder. These embeddings will be compared with the existing document embeddings through cosine similarity and assigned a label. If the document is most similar to a seeded topic, then it will get that topic's label. If it is most similar to the average document embedding, it will get the -1 label. These labels are then passed through UMAP to create a semi-supervised approach that should nudge the topic creation to the seeded topics.
 
-# Second, we take all words in seed_topic_list and assign them a multiplier larger than 1. Those multipliers will be used to increase the IDF values of the words across all topics thereby increasing the likelihood that a seeded topic word will appear in a topic. This does, however, also increase the chance of an irrelevant topic having unrelated words. In practice, this should not be an issue since the IDF value is likely to remain low regardless of the multiplier. The multiplier is now a fixed value but may change to something more elegant, like taking the distribution of IDF values and its position into account when defining the multiplier.
+Second, we take all words in seed_topic_list and assign them a multiplier larger than 1. Those multipliers will be used to increase the IDF values of the words across all topics thereby increasing the likelihood that a seeded topic word will appear in a topic. This does, however, also increase the chance of an irrelevant topic having unrelated words. In practice, this should not be an issue since the IDF value is likely to remain low regardless of the multiplier. The multiplier is now a fixed value but may change to something more elegant, like taking the distribution of IDF values and its position into account when defining the multiplier.
 
-# We also fine-tune the topic extraction with BM25 weighting cf https://maartengr.github.io/BERTopic/getting_started/ctfidf/ctfidf.html and reduce frequent words.
+We also fine-tune the topic extraction with BM25 weighting cf https://maartengr.github.io/BERTopic/getting_started/ctfidf/ctfidf.html and reduce frequent words.
 
-# We also performed this approach on a pre-cleaned corpus but results are more consistant on raw messages.
+We also performed this approach on a pre-cleaned corpus but results are more consistant on raw messages.
 
-# Here is the list for the guided modeling
-# ```
-# seed = [
-#         ['anniversaire', 'birthday'],
-#         ['saint-valentin', 'saint valentin', 'valentin'],
-#         ['joyeux Noël', 'noel'],
-#         ['bonne année'],
-#         ['paques'], 
-#         ['condoléances', 'deuil', 'tristesse', 'peine', 'triste','décès', 'prières', 'épreuve', 'hommage', 'regrets', 'prions' ],
-#         ['mariage'],
-#         ['merci', 'remerciements']
-#                 ]
-# ```
-
-
-# )
-# ''')
-# ## Run the below code if the check is checked ✅
-# if st.checkbox('Code for Guided Topic Modeling'):
-#   _code_ = "<div class='green'>Custom TFIDF, fine-tuned with BM25 weighting and seeded topic modeling, </div>"
-#   st.markdown(_code_, unsafe_allow_html=True)
-#   st.code('''
-# df = df[(df.message != '') & (~df.message.isna())] #no empty messages !
-# list_of_dates = df.date.to_list()
-# docs = [str(elem) for elem in df.message]
-# list_of_dates = df.date.to_list()
-# docs = df.test_message.to_list()
-
-# from bertopic import BERTopic
-# from bertopic.vectorizers import ClassTfidfTransformer
-
-# # cf https://maartengr.github.io/BERTopic/getting_started/ctfidf/ctfidf.html#visual-overview
-# ctfidf_model = ClassTfidfTransformer(bm25_weighting=True, reduce_frequent_words=True)
-
-# sentence_model = SentenceTransformer("lincoln/2021twitchfr-conv-bert-small-mlm-simcse")
-
-# from hdbscan import HDBSCAN
+Here is the list for the guided modeling
+```
+seed = [
+        ['anniversaire', 'birthday'],
+        ['saint-valentin', 'saint valentin', 'valentin'],
+        ['joyeux Noël', 'noel'],
+        ['bonne année'],
+        ['paques'], 
+        ['condoléances', 'deuil', 'tristesse', 'peine', 'triste','décès', 'prières', 'épreuve', 'hommage', 'regrets', 'prions' ],
+        ['mariage'],
+        ['merci', 'remerciements']
+                ]
+```
 
 
+)
+''')
+## Run the below code if the check is checked ✅
+if st.checkbox('Code for Guided Topic Modeling'):
+  _code_ = "<div class='green'>Custom TFIDF, fine-tuned with BM25 weighting and seeded topic modeling, </div>"
+  st.markdown(_code_, unsafe_allow_html=True)
+  st.code('''
+df = df[(df.message != '') & (~df.message.isna())] #no empty messages !
+list_of_dates = df.date.to_list()
+docs = [str(elem) for elem in df.message]
+list_of_dates = df.date.to_list()
+docs = df.test_message.to_list()
 
-# hdbscan_model = HDBSCAN(min_cluster_size=50, metric='euclidean', 
-#                         cluster_selection_method='eom', prediction_data=True, min_samples=5)
-# seed = [['anniversaire', 'birthday'],
-#     ['saint-valentin', 'saint valentin', 'valentin'],
-#     ['joyeux Noël', 'noel'],
-#     ['bonne année'],
-#     ['paques'], 
-#     ['condoléances', 'deuil', 'tristesse', 'peine', 'triste','décès', 'prières', 'épreuve', 'hommage', 'regrets', 'prions' ],
-#     ['mariage'],
-#     ['merci', 'remerciements']
-#                 ]
+from bertopic import BERTopic
+from bertopic.vectorizers import ClassTfidfTransformer
 
-# model = BERTopic(
-#     language = 'french',
-#     ctfidf_model=ctfidf_model,
-#     hdbscan_model=hdbscan_model,
-#     embedding_model=sentence_model, 
-#     min_topic_size=50, 
-#     # n_gram_range=(1,2), 
-#     diversity=0,
-#     # umap_model=umap_model,
-#     seed_topic_list=seed
-#                  )
-# embeddings = sentence_model.encode(docs, show_progress_bar=False)
+# cf https://maartengr.github.io/BERTopic/getting_started/ctfidf/ctfidf.html#visual-overview
+ctfidf_model = ClassTfidfTransformer(bm25_weighting=True, reduce_frequent_words=True)
 
-# topics, probs = model.fit_transform(docs, embeddings)''')
+sentence_model = SentenceTransformer("lincoln/2021twitchfr-conv-bert-small-mlm-simcse")
+
+from hdbscan import HDBSCAN
+
+
+
+hdbscan_model = HDBSCAN(min_cluster_size=50, metric='euclidean', 
+                        cluster_selection_method='eom', prediction_data=True, min_samples=5)
+seed = [['anniversaire', 'birthday'],
+    ['saint-valentin', 'saint valentin', 'valentin'],
+    ['joyeux Noël', 'noel'],
+    ['bonne année'],
+    ['paques'], 
+    ['condoléances', 'deuil', 'tristesse', 'peine', 'triste','décès', 'prières', 'épreuve', 'hommage', 'regrets', 'prions' ],
+    ['mariage'],
+    ['merci', 'remerciements']
+                ]
+
+model = BERTopic(
+    language = 'french',
+    ctfidf_model=ctfidf_model,
+    hdbscan_model=hdbscan_model,
+    embedding_model=sentence_model, 
+    min_topic_size=50, 
+    # n_gram_range=(1,2), 
+    diversity=0,
+    # umap_model=umap_model,
+    seed_topic_list=seed
+                 )
+embeddings = sentence_model.encode(docs, show_progress_bar=False)
+
+topics, probs = model.fit_transform(docs, embeddings)''')
   
-# @st.cache(allow_output_mutation = True)
-# def load_model_best():
-#   model= pickle.load(open('./pickled/last/model.pkl', 'rb'))
-#   return model
+@st.cache(allow_output_mutation = True)
+def load_model_best():
+  model= pickle.load(open('./pickled/last/model.pkl', 'rb'))
+  return model
 
-# def load_topics_best():
-#   topics = pickle.load(open('./pickled/last/topics.pkl', 'rb'))
-#   return topics
+def load_topics_best():
+  topics = pickle.load(open('./pickled/last/topics.pkl', 'rb'))
+  return topics
 
-# def load_embeddings_best():
-#   embeddings = pickle.load(open('./pickled/last/embeddings.pkl', 'rb'))
-#   return embeddings
+def load_embeddings_best():
+  embeddings = pickle.load(open('./pickled/last/embeddings.pkl', 'rb'))
+  return embeddings
 
-# def load_topics_over_time_best():
-#   topics_over_time = pickle.load(open('./pickled/last/topics_over_time.pkl', 'rb'))
-#   return topics_over_time
+def load_topics_over_time_best():
+  topics_over_time = pickle.load(open('./pickled/last/topics_over_time.pkl', 'rb'))
+  return topics_over_time
 
-# def load_reduced_model(model):
-#   reduced_model = model.reduce_topics(docs, nr_topics='auto')
-#   return reduced_model
+def load_reduced_model_best():
+  reduced_model = pickle.load(open('./pickled/last/model_reduced.pkl', 'rb'))
+  return reduced_model
 
-# model_best              = load_model_best()        
-# topics_best             = load_topics_best()
-# embeddings_best         = load_embeddings_best()
-# topics_over_time_best   = load_topics_over_time_best()
-# reduced_model           = load_reduced_model(model_best)
-# docs_message            = [str(elem) for elem in df.message]
+def load_reduced_over_time_best():
+  topics_over_time_reduced = pickle.load(open('./pickled/last/topics_over_time_reduced.pkl', 'rb'))
+  return topics_over_time_reduced
 
-# st.subheader('6.1 Topics frequency with Guided Topic Modeling ')
-# st.write(model_best.get_topic_freq().head(40))
-# st.write('At this stage, outliers account for less than 20% of messages')
+model_best              = load_model_best()        
+topics_best             = load_topics_best()
+embeddings_best         = load_embeddings_best()
+topics_over_time_best   = load_topics_over_time_best()
+reduced_model           = load_reduced_model_best()
+topics_over_time_reduced = load_reduced_over_time_best()
 
 
-# st.subheader('6.2 Documents & Topics with Guided Topic Modeling  (top 40)')
-# map_fig_guided = model_best.visualize_documents(docs_message, 
-#                           embeddings = embeddings, 
-#                           topics = [i for i in range(30)], 
-#                           hide_document_hover = False,
-#                           hide_annotations = False,)
-# st.plotly_chart(map_fig_guided,  use_container_width=True)
+docs_message            = [str(elem) for elem in df.message]
 
-# st.subheader('6.3 Intertopic Distance Map')
-# fig_guided_distance = model.visualize_topics()
-# st.plotly_chart(fig_guided_distance,  use_container_width=True)
+st.subheader('6.1 Topics frequency with Guided Topic Modeling ')
+st.write(model_best.get_topic_freq().head(40))
+st.write('At this stage, outliers account for less than 20% of messages')
 
-# st.subheader('6.4 Topic word scores')
-# fig_bar_chart = model_best.visualize_barchart(top_n_topics=12, n_words=10, height=300)
-# st.plotly_chart(fig_bar_chart,  use_container_width=True)
 
-# st.subheader('6.5 Main topics over time')
-# guided_fig_over_time = model_best.visualize_topics_over_time(topics_over_time, top_n_topics=5)
-# st.plotly_chart(guided_fig_over_time,  use_container_width=True)
+st.subheader('6.2 Documents & Topics with Guided Topic Modeling  (top 40)')
+map_fig_guided = model_best.visualize_documents(docs_message, 
+                          embeddings = embeddings, 
+                          topics = [i for i in range(40)], 
+                          hide_document_hover = False,
+                          hide_annotations = False,
+                          height = 1200)
+st.plotly_chart(map_fig_guided,  use_container_width=True)
 
-# st.subheader('6.6 Documents map after topic reduction')
-# # reduced_model = model_best.reduce_topics(docs, nr_topics='auto')
-# st.write(reduced_model.get_topic_freq())
-# map_reduced = reduced_model.visualize_documents(
-#   docs_message, 
-#   embeddings = embeddings, 
-#   topics = topics,
-#   hide_document_hover = False,
-#   hide_annotations = False)
-# st.plotly_chart(map_reduced,  use_container_width=True)
+st.subheader('6.3 Intertopic Distance Map')
+fig_guided_distance = model_best.visualize_topics()
+st.plotly_chart(fig_guided_distance,  use_container_width=True)
 
-# fig_intertopic_reduced_map = reduced_model.visualize_topics()
-# st.plotly_chart(fig_intertopic_reduced_map,  use_container_width=True)
+st.subheader('6.4 Topic word scores')
+fig_bar_chart = model_best.visualize_barchart(top_n_topics=12, n_words=10, height=300)
+st.plotly_chart(fig_bar_chart,  use_container_width=True)
 
-# st.subheader('6.7 Topics per class after topic reduction')
+st.subheader('6.5 Main topics over time')
+guided_fig_over_time = model_best.visualize_topics_over_time(topics_over_time)
+st.plotly_chart(guided_fig_over_time,  use_container_width=True)
 
-# topics_per_class = reduced_model.topics_per_class(docs_message, classes=df.libevenement.values)
-# fig_topics_per_class = model.visualize_topics_per_class(topics_per_class)
-# st.plotly_chart(fig_topics_per_class, use_container_width=True)
+st.subheader('6.6 Documents map after topic reduction')
+
+st.write(reduced_model.get_topic_freq())
+map_reduced = reduced_model.visualize_documents(
+  docs_message, 
+  embeddings = embeddings, 
+  topics = topics,
+  hide_document_hover = False,
+  hide_annotations = False, 
+  height = 1200)
+st.plotly_chart(map_reduced,  use_container_width=True)
+
+fig_intertopic_reduced_map = reduced_model.visualize_topics()
+st.plotly_chart(fig_intertopic_reduced_map,  use_container_width=True)
+
+st.subheader('6.7 Topics per class after topic reduction')
+
+topics_per_class = reduced_model.topics_per_class(docs_message, classes=df.libevenement.values)
+fig_topics_per_class = model.visualize_topics_per_class(topics_per_class)
+st.plotly_chart(fig_topics_per_class, use_container_width=True)
 
 
 
